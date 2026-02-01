@@ -1,0 +1,114 @@
+📄 PROJETO: REMIX FACTORY (MVP DE AFILIADOS)
+1. Visão Geral
+Sistema automatizado para identificar produtos físicos em marketplaces (Shopee/AliExpress), extrair mídias existentes, reescrever roteiros focados em retenção (psicologia de vendas) e remixar novos vídeos curtos para TikTok/Reels sem intervenção humana na edição.
+
+2. Stack Tecnológica
+Orquestrador: n8n (Self-hosted/Cloud).
+
+Banco de Dados: Supabase (PostgreSQL).
+
+Scraping: Apify (Actor: shopee-product-scraper ou similar).
+
+Inteligência (Cérebro): OpenAI (GPT-4o).
+
+Produção de Vídeo: Creatomate API (Edição baseada em JSON).
+
+Input Inicial: Trigger Manual ou Google Sheets.
+
+3. Estrutura de Dados (Supabase)
+Tabela: produtos_afiliados
+
+id (uuid, PK)
+
+url_produto (text) - Link da loja.
+
+nome_produto (text)
+
+descricao_raw (text)
+
+imagens_urls (text[]) - Array de links.
+
+video_origem_url (text) - Link do vídeo baixado do marketplace.
+
+status (text) - Estados: novo, processado, erro, aprovado.
+
+4. Arquitetura dos Fluxos (Workflows)
+O projeto será dividido em 3 workflows modulares no n8n.
+
+🔄 Workflow 01: O Hunter (Ingestão de Dados)
+Objetivo: Receber um link, baixar os assets brutos e salvar no banco.
+
+Entrada: Manual Trigger (Teste) ou Google Sheets Row.
+
+Processamento:
+
+Chama API do Apify para scrapear a URL.
+
+Filtra o JSON para obter apenas: Nome, Descrição, Array de Imagens e URL do Vídeo.
+
+Verifica se o vídeo existe (se não existir, aborta ou marca como 'sem_video').
+
+Saída: Insert na tabela produtos_afiliados.
+
+🧠 Workflow 02: O Copywriter (Criação de Roteiro)
+Objetivo: Transformar dados técnicos em roteiro viral.
+
+Gatilho: Database Trigger (Supabase: quando nova linha é criada).
+
+Processamento:
+
+LLM analisa a descricao_raw.
+
+LLM gera Roteiro (JSON estruturado para edição).
+
+LLM gera Legendas e Copy para redes sociais.
+
+Saída: Update na tabela produtos_afiliados preenchendo a coluna roteiro_gerado.
+
+🎬 Workflow 03: O Editor (Renderização)
+Objetivo: Gerar o MP4 final.
+
+Gatilho: Webhook ou Botão de Aprovação (Futuro).
+
+Processamento:
+
+Envia JSON do roteiro + URLs de mídia para Creatomate API.
+
+Aguarda renderização.
+
+Salva URL do vídeo final no Supabase.
+
+
+@n8n Contexto do Projeto: Estamos criando uma automação de afiliados SEM CUSTO de IA. Trocamos OpenAI por Groq/Llama3. Já tenho a tabela 'produtos_afiliados' no Supabase.
+
+TAREFA: Crie o código JSON do workflow "Ingestão de Produtos" (Fase 1).
+
+Especificações do Workflow:
+1. Trigger: Use um nó "Manual Trigger" (para teste rápido).
+   - Simule um output JSON: { "url_produto": "https://shopee.com.br/exemplo" }
+
+2. Action (Scraping): Nó "HTTP Request" para a API do Apify.
+   - Method: POST
+   - URL Placeholder: 'https://api.apify.com/v2/acts/shopee-scrapper/run-sync-get-dataset-items'
+   - Body: { "startUrls": [{ "url": "={{ $json.url_produto }}" }] }
+   - Auth: Header 'Authorization: Bearer SEU_TOKEN_APIFY'
+
+3. Transformation (Limpeza): Nó "Code" (JavaScript).
+   - O código deve filtrar o retorno do Apify.
+   - Retornar objeto: {
+       nome_produto: item.title,
+       descricao_raw: item.description,
+       video_origem_url: item.videoUrl, (ou null se não tiver)
+       imagens_urls: item.images, (array)
+       url_produto: $json.url_produto
+     }
+
+4. Action (Inteligência - Opcional agora, mas deixe o espaço):
+   - Adicione um nó "Comment" escrito: "Aqui entra o Groq/Llama3 depois".
+
+5. Database Load: Nó "Supabase".
+   - Operation: Insert.
+   - Table: 'produtos_afiliados'.
+   - Columns: Mapeie os campos do nó "Code".
+
+Gere o JSON pronto para colar no n8n.

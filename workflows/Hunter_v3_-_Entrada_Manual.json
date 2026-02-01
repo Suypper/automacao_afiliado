@@ -1,0 +1,465 @@
+﻿{
+    "updatedAt":  "2026-02-01T21:17:24.594Z",
+    "createdAt":  "2026-02-01T21:17:24.594Z",
+    "id":  "qH8KpNFKUpxZk2f4",
+    "name":  "Hunter v3 - Entrada Manual",
+    "description":  null,
+    "active":  true,
+    "isArchived":  false,
+    "nodes":  [
+                  {
+                      "id":  "form_trigger",
+                      "name":  "Formulario Produto",
+                      "type":  "n8n-nodes-base.formTrigger",
+                      "typeVersion":  2.2,
+                      "position":  [
+                                       100,
+                                       300
+                                   ],
+                      "webhookId":  "hunter-form",
+                      "parameters":  {
+                                         "formTitle":  "Cadastrar Produto - Remix Factory",
+                                         "formDescription":  "Preencha os dados do produto da Shopee",
+                                         "formFields":  {
+                                                            "values":  [
+                                                                           {
+                                                                               "fieldLabel":  "URL do Produto",
+                                                                               "fieldType":  "text",
+                                                                               "requiredField":  true,
+                                                                               "placeholder":  "https://shopee.com.br/..."
+                                                                           },
+                                                                           {
+                                                                               "fieldLabel":  "Nome do Produto",
+                                                                               "fieldType":  "text",
+                                                                               "requiredField":  true,
+                                                                               "placeholder":  "Ex: Organizador de Maquiagem"
+                                                                           },
+                                                                           {
+                                                                               "fieldLabel":  "Descricao",
+                                                                               "fieldType":  "textarea",
+                                                                               "requiredField":  false,
+                                                                               "placeholder":  "Cole a descricao do produto aqui"
+                                                                           },
+                                                                           {
+                                                                               "fieldLabel":  "Preco",
+                                                                               "fieldType":  "text",
+                                                                               "requiredField":  false,
+                                                                               "placeholder":  "Ex: 29.90"
+                                                                           },
+                                                                           {
+                                                                               "fieldLabel":  "URL Imagem Principal",
+                                                                               "fieldType":  "text",
+                                                                               "requiredField":  false,
+                                                                               "placeholder":  "URL da imagem"
+                                                                           }
+                                                                       ]
+                                                        },
+                                         "options":  {
+                                                         "respondWithOptions":  {
+                                                                                    "values":  {
+                                                                                                   "respondWith":  "text",
+                                                                                                   "formSubmittedText":  "Produto cadastrado com sucesso!"
+                                                                                               }
+                                                                                }
+                                                     }
+                                     }
+                  },
+                  {
+                      "id":  "set_data",
+                      "name":  "Preparar Dados",
+                      "type":  "n8n-nodes-base.set",
+                      "typeVersion":  3.4,
+                      "position":  [
+                                       300,
+                                       300
+                                   ],
+                      "parameters":  {
+                                         "mode":  "manual",
+                                         "assignments":  {
+                                                             "assignments":  [
+                                                                                 {
+                                                                                     "id":  "1",
+                                                                                     "name":  "url_produto",
+                                                                                     "type":  "string",
+                                                                                     "value":  "={{ $json[\u0027URL do Produto\u0027] }}"
+                                                                                 },
+                                                                                 {
+                                                                                     "id":  "2",
+                                                                                     "name":  "nome_produto",
+                                                                                     "type":  "string",
+                                                                                     "value":  "={{ $json[\u0027Nome do Produto\u0027] }}"
+                                                                                 },
+                                                                                 {
+                                                                                     "id":  "3",
+                                                                                     "name":  "descricao_raw",
+                                                                                     "type":  "string",
+                                                                                     "value":  "={{ $json[\u0027Descricao\u0027] || \u0027\u0027 }}"
+                                                                                 },
+                                                                                 {
+                                                                                     "id":  "4",
+                                                                                     "name":  "preco",
+                                                                                     "type":  "string",
+                                                                                     "value":  "={{ $json[\u0027Preco\u0027] || \u0027\u0027 }}"
+                                                                                 },
+                                                                                 {
+                                                                                     "id":  "5",
+                                                                                     "name":  "imagens_urls",
+                                                                                     "type":  "string",
+                                                                                     "value":  "={{ $json[\u0027URL Imagem Principal\u0027] ? [$json[\u0027URL Imagem Principal\u0027]] : [] }}"
+                                                                                 },
+                                                                                 {
+                                                                                     "id":  "6",
+                                                                                     "name":  "status",
+                                                                                     "type":  "string",
+                                                                                     "value":  "novo"
+                                                                                 }
+                                                                             ]
+                                                         }
+                                     }
+                  },
+                  {
+                      "id":  "note_ia",
+                      "name":  "Fase 2 - IA",
+                      "type":  "n8n-nodes-base.stickyNote",
+                      "typeVersion":  1,
+                      "position":  [
+                                       300,
+                                       100
+                                   ],
+                      "parameters":  {
+                                         "content":  "## Fase 2 - IA\nAqui entra Groq/Llama 3.3"
+                                     }
+                  },
+                  {
+                      "id":  "http_supabase",
+                      "name":  "Salvar no Supabase",
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.2,
+                      "position":  [
+                                       500,
+                                       300
+                                   ],
+                      "parameters":  {
+                                         "method":  "POST",
+                                         "url":  "https://wdwxpejnntaigwxipbxt.supabase.co/rest/v1/produtos_afiliados",
+                                         "sendHeaders":  true,
+                                         "headerParameters":  {
+                                                                  "parameters":  [
+                                                                                     {
+                                                                                         "name":  "apikey",
+                                                                                         "value":  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indkd3hwZWpubnRhaWd3eGlwYnh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NzU2NzEsImV4cCI6MjA4NTU1MTY3MX0.-IWrXQYKIPRr-UpyPlEMxHpHd7jdtlpo9nqZIu6BKWA"
+                                                                                     },
+                                                                                     {
+                                                                                         "name":  "Authorization",
+                                                                                         "value":  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indkd3hwZWpubnRhaWd3eGlwYnh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NzU2NzEsImV4cCI6MjA4NTU1MTY3MX0.-IWrXQYKIPRr-UpyPlEMxHpHd7jdtlpo9nqZIu6BKWA"
+                                                                                     },
+                                                                                     {
+                                                                                         "name":  "Content-Type",
+                                                                                         "value":  "application/json"
+                                                                                     },
+                                                                                     {
+                                                                                         "name":  "Prefer",
+                                                                                         "value":  "return=representation"
+                                                                                     }
+                                                                                 ]
+                                                              },
+                                         "sendBody":  true,
+                                         "specifyBody":  "json",
+                                         "jsonBody":  "={{ JSON.stringify({ url_produto: $json.url_produto, nome_produto: $json.nome_produto, descricao_raw: $json.descricao_raw, imagens_urls: $json.imagens_urls, status: $json.status }) }}"
+                                     }
+                  }
+              ],
+    "connections":  {
+                        "Formulario Produto":  {
+                                                   "main":  [
+                                                                [
+                                                                    {
+                                                                        "node":  "Preparar Dados",
+                                                                        "type":  "main",
+                                                                        "index":  0
+                                                                    }
+                                                                ]
+                                                            ]
+                                               },
+                        "Preparar Dados":  {
+                                               "main":  [
+                                                            [
+                                                                {
+                                                                    "node":  "Salvar no Supabase",
+                                                                    "type":  "main",
+                                                                    "index":  0
+                                                                }
+                                                            ]
+                                                        ]
+                                           }
+                    },
+    "settings":  {
+                     "executionOrder":  "v1",
+                     "callerPolicy":  "workflowsFromSameOwner",
+                     "availableInMCP":  false
+                 },
+    "staticData":  null,
+    "meta":  null,
+    "pinData":  null,
+    "versionId":  "e1496ae5-aade-4727-aae3-e611043c480b",
+    "activeVersionId":  "e1496ae5-aade-4727-aae3-e611043c480b",
+    "versionCounter":  3,
+    "triggerCount":  1,
+    "shared":  [
+                   {
+                       "updatedAt":  "2026-02-01T21:17:24.620Z",
+                       "createdAt":  "2026-02-01T21:17:24.620Z",
+                       "role":  "workflow:owner",
+                       "workflowId":  "qH8KpNFKUpxZk2f4",
+                       "projectId":  "Xrm74vBiZuMAowPx",
+                       "project":  {
+                                       "updatedAt":  "2026-02-01T20:01:01.693Z",
+                                       "createdAt":  "2026-02-01T20:00:11.001Z",
+                                       "id":  "Xrm74vBiZuMAowPx",
+                                       "name":  "suypper sh \u003cextremestormu.u@gmail.com\u003e",
+                                       "type":  "personal",
+                                       "icon":  null,
+                                       "description":  null,
+                                       "creatorId":  "94817171-5e47-4eab-9d67-e4ddf2b98bd1",
+                                       "projectRelations":  [
+                                                                {
+                                                                    "updatedAt":  "2026-02-01T20:00:11.002Z",
+                                                                    "createdAt":  "2026-02-01T20:00:11.002Z",
+                                                                    "userId":  "94817171-5e47-4eab-9d67-e4ddf2b98bd1",
+                                                                    "projectId":  "Xrm74vBiZuMAowPx",
+                                                                    "user":  {
+                                                                                 "updatedAt":  "2026-02-01T20:01:05.000Z",
+                                                                                 "createdAt":  "2026-02-01T20:00:10.344Z",
+                                                                                 "id":  "94817171-5e47-4eab-9d67-e4ddf2b98bd1",
+                                                                                 "email":  "extremestormu.u@gmail.com",
+                                                                                 "firstName":  "suypper",
+                                                                                 "lastName":  "sh",
+                                                                                 "personalizationAnswers":  {
+                                                                                                                "version":  "v4",
+                                                                                                                "personalization_survey_submitted_at":  "2026-02-01T20:01:05.847Z",
+                                                                                                                "personalization_survey_n8n_version":  "2.4.8"
+                                                                                                            },
+                                                                                 "settings":  {
+                                                                                                  "userActivated":  false
+                                                                                              },
+                                                                                 "disabled":  false,
+                                                                                 "mfaEnabled":  false,
+                                                                                 "lastActiveAt":  "2026-02-01",
+                                                                                 "isPending":  false
+                                                                             }
+                                                                }
+                                                            ]
+                                   }
+                   }
+               ],
+    "tags":  [
+
+             ],
+    "activeVersion":  {
+                          "updatedAt":  "2026-02-01T21:46:26.000Z",
+                          "createdAt":  "2026-02-01T21:17:24.649Z",
+                          "versionId":  "e1496ae5-aade-4727-aae3-e611043c480b",
+                          "workflowId":  "qH8KpNFKUpxZk2f4",
+                          "nodes":  [
+                                        {
+                                            "id":  "form_trigger",
+                                            "name":  "Formulario Produto",
+                                            "type":  "n8n-nodes-base.formTrigger",
+                                            "typeVersion":  2.2,
+                                            "position":  [
+                                                             100,
+                                                             300
+                                                         ],
+                                            "webhookId":  "hunter-form",
+                                            "parameters":  {
+                                                               "formTitle":  "Cadastrar Produto - Remix Factory",
+                                                               "formDescription":  "Preencha os dados do produto da Shopee",
+                                                               "formFields":  {
+                                                                                  "values":  [
+                                                                                                 {
+                                                                                                     "fieldLabel":  "URL do Produto",
+                                                                                                     "fieldType":  "text",
+                                                                                                     "requiredField":  true,
+                                                                                                     "placeholder":  "https://shopee.com.br/..."
+                                                                                                 },
+                                                                                                 {
+                                                                                                     "fieldLabel":  "Nome do Produto",
+                                                                                                     "fieldType":  "text",
+                                                                                                     "requiredField":  true,
+                                                                                                     "placeholder":  "Ex: Organizador de Maquiagem"
+                                                                                                 },
+                                                                                                 {
+                                                                                                     "fieldLabel":  "Descricao",
+                                                                                                     "fieldType":  "textarea",
+                                                                                                     "requiredField":  false,
+                                                                                                     "placeholder":  "Cole a descricao do produto aqui"
+                                                                                                 },
+                                                                                                 {
+                                                                                                     "fieldLabel":  "Preco",
+                                                                                                     "fieldType":  "text",
+                                                                                                     "requiredField":  false,
+                                                                                                     "placeholder":  "Ex: 29.90"
+                                                                                                 },
+                                                                                                 {
+                                                                                                     "fieldLabel":  "URL Imagem Principal",
+                                                                                                     "fieldType":  "text",
+                                                                                                     "requiredField":  false,
+                                                                                                     "placeholder":  "URL da imagem"
+                                                                                                 }
+                                                                                             ]
+                                                                              },
+                                                               "options":  {
+                                                                               "respondWithOptions":  {
+                                                                                                          "values":  {
+                                                                                                                         "respondWith":  "text",
+                                                                                                                         "formSubmittedText":  "Produto cadastrado com sucesso!"
+                                                                                                                     }
+                                                                                                      }
+                                                                           }
+                                                           }
+                                        },
+                                        {
+                                            "id":  "set_data",
+                                            "name":  "Preparar Dados",
+                                            "type":  "n8n-nodes-base.set",
+                                            "typeVersion":  3.4,
+                                            "position":  [
+                                                             300,
+                                                             300
+                                                         ],
+                                            "parameters":  {
+                                                               "mode":  "manual",
+                                                               "assignments":  {
+                                                                                   "assignments":  [
+                                                                                                       {
+                                                                                                           "id":  "1",
+                                                                                                           "name":  "url_produto",
+                                                                                                           "type":  "string",
+                                                                                                           "value":  "={{ $json[\u0027URL do Produto\u0027] }}"
+                                                                                                       },
+                                                                                                       {
+                                                                                                           "id":  "2",
+                                                                                                           "name":  "nome_produto",
+                                                                                                           "type":  "string",
+                                                                                                           "value":  "={{ $json[\u0027Nome do Produto\u0027] }}"
+                                                                                                       },
+                                                                                                       {
+                                                                                                           "id":  "3",
+                                                                                                           "name":  "descricao_raw",
+                                                                                                           "type":  "string",
+                                                                                                           "value":  "={{ $json[\u0027Descricao\u0027] || \u0027\u0027 }}"
+                                                                                                       },
+                                                                                                       {
+                                                                                                           "id":  "4",
+                                                                                                           "name":  "preco",
+                                                                                                           "type":  "string",
+                                                                                                           "value":  "={{ $json[\u0027Preco\u0027] || \u0027\u0027 }}"
+                                                                                                       },
+                                                                                                       {
+                                                                                                           "id":  "5",
+                                                                                                           "name":  "imagens_urls",
+                                                                                                           "type":  "string",
+                                                                                                           "value":  "={{ $json[\u0027URL Imagem Principal\u0027] ? [$json[\u0027URL Imagem Principal\u0027]] : [] }}"
+                                                                                                       },
+                                                                                                       {
+                                                                                                           "id":  "6",
+                                                                                                           "name":  "status",
+                                                                                                           "type":  "string",
+                                                                                                           "value":  "novo"
+                                                                                                       }
+                                                                                                   ]
+                                                                               }
+                                                           }
+                                        },
+                                        {
+                                            "id":  "note_ia",
+                                            "name":  "Fase 2 - IA",
+                                            "type":  "n8n-nodes-base.stickyNote",
+                                            "typeVersion":  1,
+                                            "position":  [
+                                                             300,
+                                                             100
+                                                         ],
+                                            "parameters":  {
+                                                               "content":  "## Fase 2 - IA\nAqui entra Groq/Llama 3.3"
+                                                           }
+                                        },
+                                        {
+                                            "id":  "http_supabase",
+                                            "name":  "Salvar no Supabase",
+                                            "type":  "n8n-nodes-base.httpRequest",
+                                            "typeVersion":  4.2,
+                                            "position":  [
+                                                             500,
+                                                             300
+                                                         ],
+                                            "parameters":  {
+                                                               "method":  "POST",
+                                                               "url":  "https://wdwxpejnntaigwxipbxt.supabase.co/rest/v1/produtos_afiliados",
+                                                               "sendHeaders":  true,
+                                                               "headerParameters":  {
+                                                                                        "parameters":  [
+                                                                                                           {
+                                                                                                               "name":  "apikey",
+                                                                                                               "value":  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indkd3hwZWpubnRhaWd3eGlwYnh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NzU2NzEsImV4cCI6MjA4NTU1MTY3MX0.-IWrXQYKIPRr-UpyPlEMxHpHd7jdtlpo9nqZIu6BKWA"
+                                                                                                           },
+                                                                                                           {
+                                                                                                               "name":  "Authorization",
+                                                                                                               "value":  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indkd3hwZWpubnRhaWd3eGlwYnh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NzU2NzEsImV4cCI6MjA4NTU1MTY3MX0.-IWrXQYKIPRr-UpyPlEMxHpHd7jdtlpo9nqZIu6BKWA"
+                                                                                                           },
+                                                                                                           {
+                                                                                                               "name":  "Content-Type",
+                                                                                                               "value":  "application/json"
+                                                                                                           },
+                                                                                                           {
+                                                                                                               "name":  "Prefer",
+                                                                                                               "value":  "return=representation"
+                                                                                                           }
+                                                                                                       ]
+                                                                                    },
+                                                               "sendBody":  true,
+                                                               "specifyBody":  "json",
+                                                               "jsonBody":  "={{ JSON.stringify({ url_produto: $json.url_produto, nome_produto: $json.nome_produto, descricao_raw: $json.descricao_raw, imagens_urls: $json.imagens_urls, status: $json.status }) }}"
+                                                           }
+                                        }
+                                    ],
+                          "connections":  {
+                                              "Formulario Produto":  {
+                                                                         "main":  [
+                                                                                      [
+                                                                                          {
+                                                                                              "node":  "Preparar Dados",
+                                                                                              "type":  "main",
+                                                                                              "index":  0
+                                                                                          }
+                                                                                      ]
+                                                                                  ]
+                                                                     },
+                                              "Preparar Dados":  {
+                                                                     "main":  [
+                                                                                  [
+                                                                                      {
+                                                                                          "node":  "Salvar no Supabase",
+                                                                                          "type":  "main",
+                                                                                          "index":  0
+                                                                                      }
+                                                                                  ]
+                                                                              ]
+                                                                 }
+                                          },
+                          "authors":  "suypper sh",
+                          "name":  "teste",
+                          "description":  "",
+                          "autosaved":  false,
+                          "workflowPublishHistory":  [
+                                                         {
+                                                             "createdAt":  "2026-02-01T21:46:26.020Z",
+                                                             "id":  1,
+                                                             "workflowId":  "qH8KpNFKUpxZk2f4",
+                                                             "versionId":  "e1496ae5-aade-4727-aae3-e611043c480b",
+                                                             "event":  "activated",
+                                                             "userId":  "94817171-5e47-4eab-9d67-e4ddf2b98bd1"
+                                                         }
+                                                     ]
+                      }
+}

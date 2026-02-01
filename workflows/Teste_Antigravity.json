@@ -1,0 +1,129 @@
+﻿{
+    "updatedAt":  "2026-02-01T20:13:02.201Z",
+    "createdAt":  "2026-02-01T20:13:02.201Z",
+    "id":  "vSWMBzBtSfBeA380",
+    "name":  "Teste Antigravity",
+    "description":  null,
+    "active":  false,
+    "isArchived":  false,
+    "nodes":  [
+                  {
+                      "id":  "manual_1",
+                      "name":  "Quando clicar em Testar",
+                      "type":  "n8n-nodes-base.manualTrigger",
+                      "typeVersion":  1,
+                      "position":  [
+                                       250,
+                                       300
+                                   ],
+                      "parameters":  {
+
+                                     }
+                  },
+                  {
+                      "id":  "set_1",
+                      "name":  "Definir Mensagem",
+                      "type":  "n8n-nodes-base.set",
+                      "typeVersion":  3.4,
+                      "position":  [
+                                       450,
+                                       300
+                                   ],
+                      "parameters":  {
+                                         "mode":  "manual",
+                                         "assignments":  {
+                                                             "assignments":  [
+                                                                                 {
+                                                                                     "id":  "1",
+                                                                                     "name":  "mensagem",
+                                                                                     "type":  "string",
+                                                                                     "value":  "Ola! A conexao com o n8n funcionou perfeitamente!"
+                                                                                 },
+                                                                                 {
+                                                                                     "id":  "2",
+                                                                                     "name":  "timestamp",
+                                                                                     "type":  "string",
+                                                                                     "value":  "={{ $now.toISO() }}"
+                                                                                 }
+                                                                             ]
+                                                         }
+                                     }
+                  }
+              ],
+    "connections":  {
+                        "Quando clicar em Testar":  {
+                                                        "main":  [
+                                                                     [
+                                                                         {
+                                                                             "node":  "Definir Mensagem",
+                                                                             "type":  "main",
+                                                                             "index":  0
+                                                                         }
+                                                                     ]
+                                                                 ]
+                                                    }
+                    },
+    "settings":  {
+                     "executionOrder":  "v1",
+                     "callerPolicy":  "workflowsFromSameOwner",
+                     "availableInMCP":  false
+                 },
+    "staticData":  null,
+    "meta":  null,
+    "pinData":  null,
+    "versionId":  "75658671-86a4-4381-ba5a-fc8c2085678f",
+    "activeVersionId":  null,
+    "versionCounter":  1,
+    "triggerCount":  0,
+    "shared":  [
+                   {
+                       "updatedAt":  "2026-02-01T20:13:02.205Z",
+                       "createdAt":  "2026-02-01T20:13:02.205Z",
+                       "role":  "workflow:owner",
+                       "workflowId":  "vSWMBzBtSfBeA380",
+                       "projectId":  "Xrm74vBiZuMAowPx",
+                       "project":  {
+                                       "updatedAt":  "2026-02-01T20:01:01.693Z",
+                                       "createdAt":  "2026-02-01T20:00:11.001Z",
+                                       "id":  "Xrm74vBiZuMAowPx",
+                                       "name":  "suypper sh \u003cextremestormu.u@gmail.com\u003e",
+                                       "type":  "personal",
+                                       "icon":  null,
+                                       "description":  null,
+                                       "creatorId":  "94817171-5e47-4eab-9d67-e4ddf2b98bd1",
+                                       "projectRelations":  [
+                                                                {
+                                                                    "updatedAt":  "2026-02-01T20:00:11.002Z",
+                                                                    "createdAt":  "2026-02-01T20:00:11.002Z",
+                                                                    "userId":  "94817171-5e47-4eab-9d67-e4ddf2b98bd1",
+                                                                    "projectId":  "Xrm74vBiZuMAowPx",
+                                                                    "user":  {
+                                                                                 "updatedAt":  "2026-02-01T20:01:05.000Z",
+                                                                                 "createdAt":  "2026-02-01T20:00:10.344Z",
+                                                                                 "id":  "94817171-5e47-4eab-9d67-e4ddf2b98bd1",
+                                                                                 "email":  "extremestormu.u@gmail.com",
+                                                                                 "firstName":  "suypper",
+                                                                                 "lastName":  "sh",
+                                                                                 "personalizationAnswers":  {
+                                                                                                                "version":  "v4",
+                                                                                                                "personalization_survey_submitted_at":  "2026-02-01T20:01:05.847Z",
+                                                                                                                "personalization_survey_n8n_version":  "2.4.8"
+                                                                                                            },
+                                                                                 "settings":  {
+                                                                                                  "userActivated":  false
+                                                                                              },
+                                                                                 "disabled":  false,
+                                                                                 "mfaEnabled":  false,
+                                                                                 "lastActiveAt":  "2026-02-01",
+                                                                                 "isPending":  false
+                                                                             }
+                                                                }
+                                                            ]
+                                   }
+                   }
+               ],
+    "tags":  [
+
+             ],
+    "activeVersion":  null
+}
