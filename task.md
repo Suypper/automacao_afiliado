@@ -1,0 +1,21 @@
+# Task Checklist
+
+- [x] Debug Chrome Extension Extraction
+    - [x] Review `popup.js` extraction logic
+    - [x] Improve Price selectors and Fallbacks
+    - [x] Verify Fix
+- [x] Finalize Copywriter Agent Workflow [/]
+    - [x] Create new workflow (`2_Agente_Copywriter_V4.json`)
+    - [x] Chain two `Groq` HTTP nodes (Strategist -> Copywriter)
+    - [x] Configure Strategist system prompt
+    - [x] Configure Copywriter system prompt
+    - [x] Ensure `Parse JSON` node handles the new structureation
+- [ ] Design Multi-Layer AI Architecture (V2) [/]
+    - [x] Analyze User Feedback (Quality Issues)
+    - [ ] Create `ai_architecture_v2.md` Proposal
+    - [ ] Implement "Strategist" Layer (Groq Llama3-70b)
+    - [ ] Implement "Copywriter" Layer (Groq Llama3-70b)
+    - [ ] Verify Output Quality
+- [ ] Verify End-to-End Pipeline
+    - [x] Extension -> Supabase
+    - [ ] Supabase -> n8n (AI Processing) -> Supabase (Result)
